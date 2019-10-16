@@ -16,21 +16,23 @@ app.listen(process.env.PORT || 4000)
 
 
 
-app.use(async (ctx, next) => {
-  const origin = ctx.get('Origin')
-  if (ctx.method !== 'OPTIONS') {
-    ctx.set('Access-Control-Allow-Origin', origin)
-    ctx.set('Access-Control-Allow-Credentials', 'true')
-  } else if (ctx.get('Access-Control-Request-Method')) {
-    ctx.set('Access-Control-Allow-Origin', origin)
-    ctx.set('Access-Control-Allow-Methods', ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'])
-    ctx.set('Access-Control-Allow-Headers', ['Content-Type', 'Authorization', 'Access-Control-Allow-Headers', 'headers'])
-    ctx.set('Access-Control-Max-Age', '42')
-    ctx.set('Access-Control-Allow-Credentials', 'true')
-    ctx.response.status = 200
-  }
-  await next()
-})
+// app.use(async (ctx, next) => {
+//   const origin = ctx.get('Origin')
+//   console.log("ctx", ctx)
+//   console.log("origin", origin)
+//   if (ctx.method !== 'OPTIONS') {
+//     ctx.set('Access-Control-Allow-Origin', origin)
+//     ctx.set('Access-Control-Allow-Credentials', 'true')
+//   } else if (ctx.get('Access-Control-Request-Method')) {
+//     ctx.set('Access-Control-Allow-Origin', origin)
+//     ctx.set('Access-Control-Allow-Methods', ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'])
+//     ctx.set('Access-Control-Allow-Headers', ['Content-Type', 'Authorization', 'Access-Control-Allow-Headers', 'headers'])
+//     ctx.set('Access-Control-Max-Age', '42')
+//     ctx.set('Access-Control-Allow-Credentials', 'true')
+//     ctx.response.status = 200
+//   }
+//   await next()
+// })
 
 
 router.param('sortOrder', async (sortOrder, ctx, next) => {

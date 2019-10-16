@@ -1,10 +1,10 @@
 const axios = require('axios')
 //const pathServer = "https://koa-jwt.herokuapp.com/user"
-const pathServer = "http://localhost:4000/trn"
+const pathServer = "http://conv-env.f4sph7vegq.us-east-2.elasticbeanstalk.com/trn"
 
 const configAx = {
-  "transName": "5 eur trn", 
-  "amountEUR": 15.519
+  "transName": "7 eur trn", 
+  "amountEUR": 155.519
   }
 axios.post(
     pathServer,
