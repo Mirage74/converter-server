@@ -39,8 +39,13 @@ router.param('sortOrder', async (sortOrder, ctx, next) => {
 })
 
 
+router.get('/', async function (ctx) {
+  console.log("null")
+  ctx.body = null
+})
 
-router.get('/:sortOrder', async function (ctx) {
+
+router.get('/trns/:sortOrder', async function (ctx) {
   let sortBy = {}
   switch (ctx.sortOrder) {
     case 0:
