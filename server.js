@@ -4,89 +4,48 @@ const bodyParser = require('koa-bodyparser'); // POST parser
 const serve = require('koa-static'); // serves static files like index.html
 const logger = require('koa-logger'); // optional module for logging
 const Transaction = require('./libs/transactions')
+const favicon = require('koa-favicon')
 require('./libs/mongoose')
 
 const app = new Koa()
 const router = new Router()
-app.use(serve('public'));
-app.use(logger());
-app.use(bodyParser());
-app.use(router.routes())
+
+app.use(serve('public'))
+app.use(favicon(__dirname + '/public/favicon.ico'))
+app.use(logger())
+app.use(bodyParser())
 app.listen(process.env.PORT || 4000)
 
+app.use(async (ctx, next) => {
+  const origin = ctx.get('Origin')
 
-
-// app.use(async (ctx, next) => {
-//   const origin = ctx.get('Origin')
-//   console.log("ctx", ctx)
-//   console.log("origin", origin)
-//   if (ctx.method !== 'OPTIONS') {
-//     ctx.set('Access-Control-Allow-Origin', origin)
-//     ctx.set('Access-Control-Allow-Credentials', 'true')
-//   } else if (ctx.get('Access-Control-Request-Method')) {
-//     ctx.set('Access-Control-Allow-Origin', origin)
-//     ctx.set('Access-Control-Allow-Methods', ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'])
-//     ctx.set('Access-Control-Allow-Headers', ['Content-Type', 'Authorization', 'Access-Control-Allow-Headers', 'headers'])
-//     ctx.set('Access-Control-Max-Age', '42')
-//     ctx.set('Access-Control-Allow-Credentials', 'true')
-//     ctx.response.status = 200
-//   }
-//   await next()
-// })
-
-
-router.param('sortOrder', async (sortOrder, ctx, next) => {
-  ctx.sortOrder = parseInt(sortOrder)
-  await next();
-})
-
-
-router.get('/', async function (ctx) {
-  console.log("null")
-  ctx.body = null
-})
-
-
-router.get('/trns/:sortOrder', async function (ctx) {
-  let sortBy = {}
-  switch (ctx.sortOrder) {
-    case 0:
-      sortBy = {
-        "_id": 1
+  if (origin === "http://localhost:8080") {
+    if (ctx.method !== 'OPTIONS') {
+      ctx.set('Access-Control-Allow-Origin', origin);
+      ctx.set('Access-Control-Allow-Credentials', 'true');
+    } else {
+      if (ctx.get('Access-Control-Request-Method')) {
+        ctx.set('Access-Control-Allow-Origin', origin);
+        ctx.set('Access-Control-Allow-Methods', ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS']);
+        ctx.set('Access-Control-Allow-Headers', ['Content-Type', 'Authorization', 'Access-Control-Allow-Headers', 'headers', 'login']);
+        ctx.set('Access-Control-Max-Age', '42');
+        ctx.set('Access-Control-Allow-Credentials', 'true');
+        ctx.response.status = 200
+        //console.log('ctx.response.status', ctx.response.status)
       }
-      break;
-    case 1:
-      sortBy = {
-        "transName": 1
-      }
-      break;
-    case 2:
-      sortBy = {
-        "amountEUR": 1
-      }
-      break;
-    case 3:
-      sortBy = {
-        "_id": -1
-      }
-      break;
-    case 4:
-      sortBy = {
-        "transName": -1
-      }
-      break;
-    case 5:
-      sortBy = {
-        "amountEUR": -1
-      }
-      break;
-    default:
-      sortBy = {
-        "_id": 1
-      }
+    }
   }
+  await next();
+});
 
-  let transactions = await Transaction.find().sort(sortBy)
+
+
+app.use(router.routes())
+
+
+
+router.get('/trns', async function (ctx) {
+  let transactions = await Transaction.find()
     .catch(err => {
       ctx.status = 400
       console.log("err router.get ", err)
@@ -129,7 +88,7 @@ router.post('/trn', async (ctx, next) => {
       ctx.body = err
     }
   } else {
-    ctx.body = `Transaction ${ctx.request.body.transName} already exist !`
+    ctx.body = `EXIST: Transaction ${ctx.request.body.transName} already exist !`
   }
 })
 

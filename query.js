@@ -3,7 +3,7 @@ const axios = require('axios')
 const pathServer = "http://conv-env.f4sph7vegq.us-east-2.elasticbeanstalk.com/trn"
 
 const configAx = {
-  "transName": "7 eur trn", 
+  "transName": "llrurn", 
   "amountEUR": 155.519
   }
 axios.post(
