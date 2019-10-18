@@ -19,7 +19,7 @@ app.listen(process.env.PORT || 4000)
 app.use(async (ctx, next) => {
   const origin = ctx.get('Origin')
 
-  if ( (origin === "http://localhost:8080") || (origin === "http://balex.byethost17.com") ){
+  if ( (origin === "http://localhost:8080") || (origin === "https://balex171.000webhostapp.com") ){
     if (ctx.method !== 'OPTIONS') {
       ctx.set('Access-Control-Allow-Origin', origin);
       ctx.set('Access-Control-Allow-Credentials', 'true');
