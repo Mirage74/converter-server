@@ -42,6 +42,18 @@ app.use(async (ctx, next) => {
 
 app.use(router.routes())
 
+router.param('trnById', async (id, ctx, next) => {
+   ctx.trnById = await Transaction.findById(id);
+   if (!ctx.trnById) {
+     ctx.body = `Error find user for del with ID ${id}`
+    }
+  await next();
+})
+
+router.del('/del/:trnById',  async function(ctx) {
+  await ctx.trnById.remove();
+  ctx.body = 'ok';
+})
 
 
 router.get('/trns', async function (ctx) {
